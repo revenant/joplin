@@ -23,7 +23,7 @@ steps:
 
 - task: Gradle@3
   inputs:
-    workingDirectory: .
+    workingDirectory: 'packages/app-mobile/android'
     gradleWrapperFile: 'packages/app-mobile/android/gradlew'
     gradleOptions: '-Xmx3072m'
     publishJUnitResults: false
