@@ -1,0 +1,53 @@
+# Android
+# Build your Android project with Gradle.
+# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/android
+
+#trigger:
+#- dev
+
+pool:
+  vmImage: 'macos-latest'
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'mySC'
+    organization: 'revenant8'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'revenant8_SonarExamples'
+    cliProjectName: 'SonarExamples'
+    cliSources: '.'
+    
+steps:
+- task: Gradle@2
+  inputs:
+    workingDirectory: packages/app-mobile/android
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    publishJUnitResults: false
+    testResultsFiles: '**/TEST-*.xml'
+    tasks: 'installDebug'
+    sonarQubeRunAnalysis: true
+    sonarQubeGradlePluginVersion: 3.3
+
+- task: WhiteSource Bolt@20
+    cwd: 'packages/app-mobile/android'
+
+- task: SonarCloudAnalyze@1
+- task: SonarCloudPublish@1
+
+- task: Bash@3
+  DisplayName: "grype"
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your commands here
+      echo `pwd`
+      curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh > /tmp/out.sh
+         
+      mkdir -pv /tmp/local/bin
+      sh /tmp/out.sh -b /tmp/local/bin
+      /tmp/local/bin/grype ../.
+
+
