@@ -9,6 +9,7 @@
 pool:
   vmImage: 'macos-latest'
 
+steps:
 - task: SonarCloudPrepare@1
   inputs:
     SonarCloud: 'mySC'
@@ -19,7 +20,7 @@ pool:
     cliProjectName: 'SonarExamples'
     cliSources: '.'
     
-steps:
+
 - task: Gradle@2
   inputs:
     workingDirectory: packages/app-mobile/android
@@ -32,13 +33,14 @@ steps:
     sonarQubeGradlePluginVersion: 3.3
 
 - task: WhiteSource Bolt@20
-    cwd: 'packages/app-mobile/android'
+  inputs:
+    cwd: 'packages'
 
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1
 
 - task: Bash@3
-  DisplayName: "grype"
+  displayName: "grype"
   inputs:
     targetType: 'inline'
     script: |
