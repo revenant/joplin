@@ -21,7 +21,7 @@ steps:
     cliSources: '.'
     
 
-- task: Gradle@2
+- task: Gradle@3
   inputs:
     workingDirectory: packages/app-mobile/android
     gradleWrapperFile: 'gradlew'
