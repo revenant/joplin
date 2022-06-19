@@ -20,6 +20,17 @@ steps:
     cliProjectName: 'SonarExamples'
     cliSources: '.'
     
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your commands here
+      rm -fr android\app\build
+      rm -fr android\build
+      rm  -fr  android\.gradle
+      rm -fr node_modules
+      yarn install
+    workingDirectory: 'packages/app-mobile/'
 
 - task: Gradle@3
   inputs:
